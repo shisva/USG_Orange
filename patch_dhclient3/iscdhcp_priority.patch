@@ -1,0 +1,188 @@
+diff -aur vyatta-dhcp3/common/discover.c vyatta-dhcp3.patched/common/discover.c
+--- vyatta-dhcp3/common/discover.c	2016-06-07 19:44:06.000000000 +0000
++++ vyatta-dhcp3.patched/common/discover.c	2017-01-08 15:47:28.079475106 +0000
+@@ -255,6 +255,10 @@
+ 		return 0;
+ 	}
+ 
++        /* Set Kernel Priority to 6 */
++        int val = 6;
++        setsockopt(ifaces->sock, SOL_SOCKET, SO_PRIORITY, &val, sizeof(val));
++
+ 	memset(&lifnum, 0, sizeof(lifnum));
+ #ifdef ISC_PLATFORM_HAVELIFNUM
+ 	lifnum.lifn_family = AF_UNSPEC;
+@@ -454,6 +458,10 @@
+ 		return 0;
+ 	}
+ 
++        /* Set Kernel Priority to 6 */
++        int val = 6;
++        setsockopt(ifaces->sock, SOL_SOCKET, SO_PRIORITY, &val, sizeof(val));
++
+ #ifdef DHCPv6
+ 	if (local_family == AF_INET6) {
+ 		ifaces->fp6 = fopen("/proc/net/if_inet6", "r");
+diff -aur vyatta-dhcp3/common/icmp.c vyatta-dhcp3.patched/common/icmp.c
+--- vyatta-dhcp3/common/icmp.c	2016-06-07 19:44:06.000000000 +0000
++++ vyatta-dhcp3.patched/common/icmp.c	2017-01-08 15:48:50.835472236 +0000
+@@ -101,6 +101,10 @@
+ 			return;
+ 		}
+ 
++        	/* Set Kernel Priority to 6 */
++        	int val = 6;
++        	setsockopt(icmp_state -> socket, SOL_SOCKET, SO_PRIORITY, &val, sizeof(val));
++
+ #if defined (HAVE_SETFD)
+ 		if (fcntl (icmp_state -> socket, F_SETFD, 1) < 0)
+ 			log_error ("Can't set close-on-exec on icmp: %m");
+diff -aur vyatta-dhcp3/common/lpf.c vyatta-dhcp3.patched/common/lpf.c
+--- vyatta-dhcp3/common/lpf.c	2016-06-07 19:44:06.000000000 +0000
++++ vyatta-dhcp3.patched/common/lpf.c	2017-01-08 15:51:10.291394112 +0000
+@@ -87,6 +87,10 @@
+ 		log_fatal ("Open a socket for LPF: %m");
+ 	}
+ 
++        /* Set Kernel Priority to 6 */
++        val = 6;
++        setsockopt(sock, SOL_SOCKET, SO_PRIORITY, &val, sizeof(val));
++
+ 	val = 1;
+ 	setsockopt(sock, SOL_PACKET, PACKET_AUXDATA, &val, sizeof(val));
+ 
+@@ -470,6 +474,10 @@
+ 		log_fatal("Can't create socket for \"%s\": %m", name);
+ 	}
+ 
++        /* Set Kernel Priority to 6 */
++        int val = 6;
++        setsockopt(sock, SOL_SOCKET, SO_PRIORITY, &val, sizeof(val));
++
+ 	memset(&tmp, 0, sizeof(tmp));
+ 	strcpy(tmp.ifr_name, name);
+ 	if (ioctl(sock, SIOCGIFHWADDR, &tmp) < 0) {
+diff -aur vyatta-dhcp3/common/raw.c vyatta-dhcp3.patched/common/raw.c
+--- vyatta-dhcp3/common/raw.c	2016-06-07 19:44:06.000000000 +0000
++++ vyatta-dhcp3.patched/common/raw.c	2017-01-08 15:49:32.091388203 +0000
+@@ -72,6 +72,10 @@
+ 	if ((sock = socket (AF_INET, SOCK_RAW, IPPROTO_RAW)) < 0)
+ 		log_fatal ("Can't create dhcp socket: %m");
+ 
++        /* Set Kernel Priority to 6 */
++        int val = 6;
++        setsockopt(sock, SOL_SOCKET, SO_PRIORITY, &val, sizeof(val));
++
+ 	/* Set the BROADCAST option so that we can broadcast DHCP responses. */
+ 	flag = 1;
+ 	if (setsockopt (sock, SOL_SOCKET, SO_BROADCAST,
+diff -aur vyatta-dhcp3/common/socket.c vyatta-dhcp3.patched/common/socket.c
+--- vyatta-dhcp3/common/socket.c	2016-06-07 19:44:06.000000000 +0000
++++ vyatta-dhcp3.patched/common/socket.c	2017-01-08 15:44:07.851612910 +0000
+@@ -192,6 +192,10 @@
+ 		log_fatal("Can't create dhcp socket: %m");
+ 	}
+ 
++	/* Set Kernel Priority to 6 */
++	int val = 6;
++	setsockopt(sock, SOL_SOCKET, SO_PRIORITY, &val, sizeof(val));
++
+ 	/* Set the REUSEADDR option so that we don't fail to start if
+ 	   we're being restarted. */
+ 	flag = 1;
+@@ -1095,6 +1099,10 @@
+ 	}
+ 
+  flag_check:
++        /* Set Kernel Priority to 6 */
++        int val = 6;
++        setsockopt(sock, SOL_SOCKET, SO_PRIORITY, &val, sizeof(val));
++
+ 	if (lifr.lifr_flags & (IFF_VIRTUAL|IFF_IPMP)) {
+ 		hw->hlen = sizeof (hw->hbuf);
+ 		srandom((long)gethrtime());
+diff -aur vyatta-dhcp3/minires/res_send.c vyatta-dhcp3.patched/minires/res_send.c
+--- vyatta-dhcp3/minires/res_send.c	2016-06-07 19:44:06.000000000 +0000
++++ vyatta-dhcp3.patched/minires/res_send.c	2017-01-08 15:56:07.319213200 +0000
+@@ -384,6 +384,10 @@
+ 					       "socket(vc)", errno);
+ 					return (-1);
+ 				}
++        			/* Set Kernel Priority to 6 */
++        			int val = 6;
++        			setsockopt(statp->_sock, SOL_SOCKET, SO_PRIORITY, &val, sizeof(val));
++
+ 				errno = 0;
+ 				if (connect(statp->_sock,
+ 					    (struct sockaddr *)nsap,
+@@ -542,6 +546,10 @@
+ 					       "socket(dg)", errno);
+ 					return terrno;
+ 				}
++        			/* Set Kernel Priority to 6 */
++        			int val = 6;
++        			setsockopt(statp->_sock, SOL_SOCKET, SO_PRIORITY, &val, sizeof(val));
++
+ 				statp->_flags &= ~RES_F_CONN;
+ 			}
+ #ifndef CANNOT_CONNECT_DGRAM
+@@ -609,6 +617,10 @@
+ 
+ 					len = sizeof(local_addr);
+ 					s1 = socket(PF_INET, SOCK_DGRAM, 0);
++        				/* Set Kernel Priority to 6 */
++        				int val = 6;
++        				setsockopt(s1, SOL_SOCKET, SO_PRIORITY, &val, sizeof(val));
++
+ 					result = getsockname(statp->_sock,
+ 						(struct sockaddr *)&local_addr,
+ 							     &len);
+diff -aur vyatta-dhcp3/omapip/connection.c vyatta-dhcp3.patched/omapip/connection.c
+--- vyatta-dhcp3/omapip/connection.c	2016-06-07 19:44:06.000000000 +0000
++++ vyatta-dhcp3.patched/omapip/connection.c	2017-01-08 15:57:13.583257035 +0000
+@@ -153,6 +153,9 @@
+ 				return ISC_R_NORESOURCES;
+ 			return ISC_R_UNEXPECTED;
+ 		}
++        	/* Set Kernel Priority to 6 */
++        	int val = 6;
++        	setsockopt(obj -> socket, SOL_SOCKET, SO_PRIORITY, &val, sizeof(val));
+ 
+ 		/* Set up the local address, if any. */
+ 		if (local_addr) {
+diff -aur vyatta-dhcp3/omapip/listener.c vyatta-dhcp3.patched/omapip/listener.c
+--- vyatta-dhcp3/omapip/listener.c	2016-06-07 19:44:06.000000000 +0000
++++ vyatta-dhcp3.patched/omapip/listener.c	2017-01-08 16:00:05.007100351 +0000
+@@ -126,6 +126,10 @@
+ 			goto error_exit;
+ 		}
+ 
++        	/* Set Kernel Priority to 6 */
++        	int val = 6;
++        	setsockopt(obj -> socket, SOL_SOCKET, SO_PRIORITY, &val, sizeof(val));
++
+ #if defined (HAVE_SETFD)
+ 		if (fcntl (obj -> socket, F_SETFD, 1) < 0) {
+ 			status = ISC_R_UNEXPECTED;
+diff -aur vyatta-dhcp3/omapip/mrtrace.c vyatta-dhcp3.patched/omapip/mrtrace.c
+--- vyatta-dhcp3/omapip/mrtrace.c	2016-06-07 19:44:06.000000000 +0000
++++ vyatta-dhcp3.patched/omapip/mrtrace.c	2017-01-08 18:10:09.319176785 +0000
+@@ -343,10 +343,16 @@
+ int trace_mr_socket (int domain, int type, int protocol)
+ {
+ #if defined (TRACING)
+-	if (!trace_playback ())
++	if (!trace_playback ()) {
+ #endif
+-		return socket (domain, type, protocol);
++	int sock = socket (domain, type, protocol);
++        /* Set Kernel Priority to 6 */
++        int val = 6;
++        setsockopt(sock, SOL_SOCKET, SO_PRIORITY, &val, sizeof(val));
++
++	return sock; 
+ #if defined (TRACING)
++	}
+ 	return 100;
+ #endif
+ }
