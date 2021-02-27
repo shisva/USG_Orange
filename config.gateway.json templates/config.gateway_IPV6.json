@@ -1,0 +1,50 @@
+{
+        "interfaces": {
+                "ethernet": {
+                        "eth0": {
+                                "vif": {
+                                        "832": {
+                                                "dhcp-options": {
+                                                        "client-option": [
+                                                                "send vendor-class-identifier &quot;sagem&quot;;",
+                                                                "send user-class &quot;\\053FSVDSL_livebox.Internet.softathome.Livebox4&quot;;",
+                                                                "send dhcp-client-identifier 1:30:XX:XX:XX:XX:XX;",
+                                                                "send rfc3118-auth 00:00:00:00:00:00:00:00:00:00:00:1A:09:00:00:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX;",
+                                                                "request subnet-mask, routers, domain-name-servers, domain-name, broadcast-address, dhcp-lease-time, dhcp-renewal-time, dhcp-rebinding-time, rfc3118-auth;"
+                                                        ]
+                                                },
+                                                "egress-qos": "0:0 1:0 2:0 3:0 4:0 5:0 6:6 7:0",
+                                                "ipv6": {
+                                                        "address": {
+                                                                "autoconf": "''"
+                                                        },
+                                                        "dup-addr-detect-transmits": "1"
+                                                }
+                                        }
+                                }
+                        },
+                        "eth1": {
+                                "ipv6": {
+                                        "dup-addr-detect-transmits": "1",
+                                        "router-advert": {
+                                                "cur-hop-limit": "64",
+                                                "link-mtu": "0",
+                                                "managed-flag": "false",
+                                                "max-interval": "600",
+                                                "other-config-flag": "false",
+                                                "prefix": {
+                                                        "::/64": {
+                                                                "autonomous-flag": "true",
+                                                                "on-link-flag": "true",
+                                                                "valid-lifetime": "2592000"
+                                                        }
+                                                },
+                                                "reachable-time": "0",
+                                                "retrans-timer": "0",
+                                                "send-advert": "true"
+                                        }
+                                }
+                        }
+                }
+        }
+}
