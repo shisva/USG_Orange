@@ -1,0 +1,65 @@
+{
+    "firewall": {
+        "source-validation": "disable"
+    },
+
+    "interfaces": {
+        "ethernet": {
+            "eth0": {
+                "vif": {
+                    "832": {
+                        "dhcp-options": {
+                            "client-option": [
+                                "send vendor-class-identifier &quot;sagem&quot;;",
+                                "send user-class &quot;\\053FSVDSL_livebox.Internet.softathome.Livebox4&quot;;",
+                                "send dhcp-client-identifier 1:30:XX:XX:XX:XX:XX;",
+                                "send rfc3118-auth 00:00:00:00:00:00:00:00:00:00:00:1A:09:00:00:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX;",
+                                "request subnet-mask, routers, domain-name-servers, domain-name, broadcast-address, dhcp-lease-time, dhcp-renewal-time, dhcp-rebinding-time, rfc3118-auth;"
+                            ]
+                        },
+                        "egress-qos": "0:0 1:0 2:0 3:0 4:0 5:0 6:6 7:0",
+                    },
+                    "840": {
+                        "address": [
+                            "192.168.255.254/24"
+                        ],
+                        "egress-qos": "0:5 1:5 2:5 3:5 4:5 5:5 6:5 7:5"
+                    }
+                }
+            }
+        }
+    },
+    "protocols": {
+        "igmp-proxy": {
+            "disable-quickleave": "''",
+            "interface": {
+                "eth0": {
+                    "role": "disabled",
+                    "threshold": "1"
+                },
+                "eth0.832": {
+                    "role": "disabled",
+                    "threshold": "1"
+                },
+                "eth0.840": {
+                    "alt-subnet": [
+                        "0.0.0.0/0"
+                    ],
+                    "role": "upstream",
+                    "threshold": "1"
+                },
+                "eth1": {
+                    "role": "disabled",
+                    "threshold": "1"
+                },
+                "eth2": {
+                    "alt-subnet": [
+                        "0.0.0.0/0"
+                    ],
+                    "role": "downstream",
+                    "threshold": "1"
+                }
+            }
+        }
+    }
+}
